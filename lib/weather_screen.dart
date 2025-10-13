@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:weather_app/additional_information.dart';
+import 'package:weather_app/hourly_forecast_card.dart';
 
 class WeatherScreen extends StatelessWidget {
   const WeatherScreen({super.key});
@@ -117,12 +119,33 @@ class WeatherScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 8),
+
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        AdditionalInformation(),
-                        AdditionalInformation(),
-                        AdditionalInformation(),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 1,
+                          child: SizedBox(child: AdditionalInformation()),
+                        ),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 1,
+                          child: SizedBox(child: AdditionalInformation()),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 1,
+                          child: SizedBox(child: AdditionalInformation()),
+                        ),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 1,
+                          child: SizedBox(child: AdditionalInformation()),
+                        ),
                       ],
                     ),
                   ],
@@ -130,51 +153,6 @@ class WeatherScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class AdditionalInformation extends StatelessWidget {
-  const AdditionalInformation({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(Icons.water_drop_rounded, size: 24),
-        SizedBox(height: 6),
-        Text("Humidity"),
-        SizedBox(height: 6),
-        Text("94"),
-      ],
-    );
-  }
-}
-
-class HourlyForecastCard extends StatelessWidget {
-  const HourlyForecastCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        width: 100,
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
-        child: Column(
-          children: [
-            Text(
-              "09:00",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Icon(Icons.cloud, size: 28),
-            SizedBox(height: 8),
-            Text("23.8°C", style: TextStyle(fontSize: 14)),
-          ],
         ),
       ),
     );
