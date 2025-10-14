@@ -6,3 +6,6 @@ Phone:
 
 Windows App:
 ![alt text](image-1.png)
+
+TODO: 
+- Make the temeperature to be switched from (C -> F -> K)

@@ -120,31 +120,65 @@ class WeatherScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
 
+                    // Row(
+                    //   children: [
+                    //     Flexible(
+                    //       fit: FlexFit.tight,
+                    //       flex: 1,
+                    //       child: SizedBox(child: AdditionalInformation(icon: Icons.air,
+                    //       label: "Wind Speed",
+                    //       value: "3 km/h",
+                    //     ))),
                     Row(
                       children: [
                         Flexible(
-                          fit: FlexFit.tight,
                           flex: 1,
-                          child: SizedBox(child: AdditionalInformation()),
+                          fit: FlexFit.tight,
+                          child: SizedBox(
+                            child: AdditionalInformation(
+                              icon: Icons.air,
+                              label: "Wind Speed",
+                              value: "3 km/h",
+                            ),
+                          ),
                         ),
                         Flexible(
-                          fit: FlexFit.tight,
                           flex: 1,
-                          child: SizedBox(child: AdditionalInformation()),
+                          fit: FlexFit.tight,
+                          child: SizedBox(
+                            child: AdditionalInformation(
+                              icon: Icons.thermostat,
+                              label: "Pressure",
+                              value: "1014mb",
+                            ),
+                          ),
                         ),
                       ],
                     ),
+
                     Row(
                       children: [
                         Flexible(
                           fit: FlexFit.tight,
                           flex: 1,
-                          child: SizedBox(child: AdditionalInformation()),
+                          child: SizedBox(
+                            child: AdditionalInformation(
+                              icon: Icons.shield,
+                              label: "UV Index",
+                              value: "High(7)",
+                            ),
+                          ),
                         ),
                         Flexible(
                           fit: FlexFit.tight,
                           flex: 1,
-                          child: SizedBox(child: AdditionalInformation()),
+                          child: SizedBox(
+                            child: AdditionalInformation(
+                              icon: Icons.water_drop,
+                              label: "Humidity",
+                              value: "94%",
+                            ),
+                          ),
                         ),
                       ],
                     ),

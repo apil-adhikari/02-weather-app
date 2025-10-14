@@ -1,34 +1,35 @@
 import 'package:flutter/material.dart';
 
 class AdditionalInformation extends StatelessWidget {
-  const AdditionalInformation({super.key});
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const AdditionalInformation({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // return Column(
-
-    //   children: [
-    //     Icon(Icons.water_drop_rounded, size: 24),
-    //     SizedBox(height: 6),
-    //     Text("Humidity"),
-    //     SizedBox(height: 6),
-    //     Text("94"),
-    //   ],
-    // );
-
     return Card(
       shadowColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
           child: Column(
             children: [
-              Icon(Icons.water_drop_rounded, size: 24),
+              Icon(icon, size: 24),
               SizedBox(height: 6),
-              Text("Humidity"),
+              Text(label),
               SizedBox(height: 6),
-              Text("94"),
+              Text(
+                value,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ],
           ),
         ),
