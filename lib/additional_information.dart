@@ -16,11 +16,14 @@ class AdditionalInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shadowColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: SizedBox(
+          // height: 105,
           child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(icon, size: 24),
               SizedBox(height: 6),
