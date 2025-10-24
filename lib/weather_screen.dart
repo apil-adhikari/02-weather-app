@@ -16,13 +16,13 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  final String cityName = 'London';
+  final String cityName = 'Kathmandu';
 
   Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
       final response = await http.get(
         Uri.parse(
-          'https://api.openweathermap.org/data/2.5/forecast?q=Kathmandu&appid=$openWeatherAPIKey',
+          'https://api.openweathermap.org/data/2.5/forecast?q=$cityName&appid=$openWeatherAPIKey',
         ),
       );
 
@@ -94,19 +94,55 @@ class _WeatherScreenState extends State<WeatherScreen> {
           final currentHumidity = currentWeatherData['main']['humidity'];
           final cityLocation = data['city']['name'];
           final countryLocation = data['city']['country'];
-          DateTime sunriseTime = DateTime.fromMillisecondsSinceEpoch(
-            data['city']['sunrise'] * 1000,
+
+          // DateTime sunriseTime = DateTime.fromMillisecondsSinceEpoch(
+          //   data['city']['sunrise'] * 1000,
+          //   isUtc: true,
+          // ).toUtc();
+          // final sunriseTimeFormatted = DateFormat(
+          //   'hh:mm a',
+          // ).format(sunriseTime);
+          // print(sunriseTimeFormatted);
+          // DateTime sunsetTime = DateTime.fromMillisecondsSinceEpoch(
+          //   data['city']['sunset'] * 1000,
+          //   isUtc: true,
+          // ).toUtc();
+          // final sunsetTimeFormatted = DateFormat('hh:mm a').format(sunsetTime);
+          // print(sunsetTimeFormatted);
+          // Extract timestamps
+          final int sunriseTimestamp = data['city']['sunrise'];
+          final int sunsetTimestamp = data['city']['sunset'];
+          final int timezoneOffset = data['city']['timezone'];
+
+          // Convert sunrise and sunset from UTC UNIX timestamp
+          final DateTime sunriseUtc = DateTime.fromMillisecondsSinceEpoch(
+            sunriseTimestamp * 1000,
             isUtc: true,
-          ).toLocal();
-          final sunriseTimeFormatted = DateFormat(
+          );
+          final DateTime sunsetUtc = DateTime.fromMillisecondsSinceEpoch(
+            sunsetTimestamp * 1000,
+            isUtc: true,
+          );
+
+          // Apply the timezone offset to get city’s local time
+          final DateTime sunriseLocal = sunriseUtc.add(
+            Duration(seconds: timezoneOffset),
+          );
+          final DateTime sunsetLocal = sunsetUtc.add(
+            Duration(seconds: timezoneOffset),
+          );
+
+          // Format times
+          final String sunriseFormatted = DateFormat(
             'hh:mm a',
-          ).format(sunriseTime);
-          print(sunriseTimeFormatted);
-          DateTime sunsetTime = DateTime.fromMillisecondsSinceEpoch(
-            data['city']['sunset'] * 1000,
-            isUtc: true,
-          ).toLocal();
-          final sunsetTimeFormatted = DateFormat('hh:mm a').format(sunsetTime);
+          ).format(sunriseLocal);
+          final String sunsetFormatted = DateFormat(
+            'hh:mm a',
+          ).format(sunsetLocal);
+
+          // Print or display
+          print('Sunrise: $sunriseFormatted');
+          print('Sunset: $sunsetFormatted');
 
           return SingleChildScrollView(
             child: Padding(
@@ -198,16 +234,80 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              HourlyForecastCard(),
-                              HourlyForecastCard(),
-                              HourlyForecastCard(),
-                              HourlyForecastCard(),
-                              HourlyForecastCard(),
-                            ],
+
+                        // SingleChildScrillView is allowing horizontal scrolling of Row widget
+                        // Performance issue with large data is that this renders all children widgets at once
+                        // SingleChildScrollView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   child: Row(
+                        //     children: [
+                        //       for (int i = 0; i < 39; i++)
+                        //         HourlyForecastCard(
+                        //           timeText: hourlyForecastData[i + 1]['dt']
+                        //               .toString(),
+                        //           weatherIcon:
+                        //               hourlyForecastData[i +
+                        //                       1]['weather'][0]['main'] ==
+                        //                   "Clouds"
+                        //               ? Icons.cloud
+                        //               : hourlyForecastData[i +
+                        //                         1]['weather'][0]['main'] ==
+                        //                     "Rain"
+                        //               ? Icons.beach_access
+                        //               : hourlyForecastData[i +
+                        //                         1]['weather'][0]['main'] ==
+                        //                     "Clear"
+                        //               ? Icons.wb_sunny
+                        //               : Icons.wb_cloudy,
+                        //           temperatureText:
+                        //               hourlyForecastData[i + 1]['main']['temp']
+                        //                   .toString(),
+                        //         ),
+                        //     ],
+                        //   ),
+                        // ),
+
+                        // OPTIMIZATION using Lazy Loading with ListView.builder
+                        // Using ListView.builder for better performance with large data sets
+                        // Data for Hourly Forecast
+                        // final hourlyTime = hourlyForecastData['dt_txt'];
+                        // final hourlyTempK = hourlyForecastData['main']['temp'];
+                        // final hourlySky = hourlyForecastData['weather'][0]['main'];
+                        SizedBox(
+                          height: 120,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                                5, // improves the ability of the [ListView] to estimate the maximum scroll extent.
+                            itemBuilder: (context, index) {
+                              final hourlyForecastData =
+                                  data['list'][index +
+                                      1]; // In ListView, index starts with 0
+                              final time = DateTime.parse(
+                                hourlyForecastData['dt_txt'],
+                              );
+
+                              return HourlyForecastCard(
+                                /// Date Extraction
+                                /// 1) Using substring (YYYY-MM-DD )
+                                /// 2) Using package like 'intl'
+                                timeText: DateFormat.j().format(time),
+                                weatherIcon:
+                                    hourlyForecastData['weather'][0]['main'] ==
+                                        "Clouds"
+                                    ? Icons.cloud
+                                    : hourlyForecastData['weather'][0]['main'] ==
+                                          "Rain"
+                                    ? Icons.beach_access
+                                    : hourlyForecastData['weather'][0]['main'] ==
+                                          "Clear"
+                                    ? Icons.wb_sunny
+                                    : Icons.wb_cloudy,
+                                temperatureText:
+                                    hourlyForecastData['main']['temp']
+                                        .toString(),
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -279,6 +379,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     ),
                   ),
 
+                  SizedBox(height: 12),
+
                   SizedBox(
                     width: double.infinity,
                     child: Row(
@@ -313,7 +415,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    sunriseTimeFormatted,
+                                    sunriseFormatted,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -324,6 +426,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             ),
                           ),
                         ),
+
                         const SizedBox(width: 12),
                         Expanded(
                           child: Card(
@@ -354,7 +457,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    sunsetTimeFormatted,
+                                    sunsetFormatted,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,

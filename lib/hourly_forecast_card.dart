@@ -1,7 +1,17 @@
 import "package:flutter/material.dart";
 
 class HourlyForecastCard extends StatelessWidget {
-  const HourlyForecastCard({super.key});
+  final String timeText;
+  final IconData weatherIcon;
+  final String temperatureText;
+
+  const HourlyForecastCard({
+    super.key,
+    // Named Parameters(that why we are using curly braces and required keyword)
+    required this.timeText,
+    required this.weatherIcon,
+    required this.temperatureText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +25,15 @@ class HourlyForecastCard extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              "09:00",
+              timeText,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             SizedBox(height: 8),
-            Icon(Icons.cloud, size: 28),
+            Icon(weatherIcon, size: 28),
             SizedBox(height: 8),
-            Text("23.8°C", style: TextStyle(fontSize: 14)),
+            Text(temperatureText, style: TextStyle(fontSize: 14)),
             SizedBox(height: 8),
           ],
         ),
