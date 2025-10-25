@@ -16,7 +16,11 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  final String cityName = 'Kathmandu';
+  final String cityName = 'London';
+
+  // Instead of calling the future in the FutureBuilder, we need to place it outside the future builder.
+
+  late Future<Map<String, dynamic>> _weather;
 
   Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
@@ -40,6 +44,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Set late variable weather
+    _weather = getCurrentWeather();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -52,9 +63,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
           //     print("refresh");
           //   },
           // ),
+
+          // This refresh button should be working to refesh and refetch the data from API
           IconButton(
             onPressed: () {
-              print("Refresh");
+              setState(() {
+                _weather =
+                    getCurrentWeather(); // Reinitizlizing the future when refreshed so that the old value is not stored in _weather
+              }); // This will call the build function and rebuild the scaffold
             },
             icon: Icon(Icons.refresh),
           ),
@@ -64,7 +80,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
       ),
 
       body: FutureBuilder(
-        future: getCurrentWeather(),
+        future: _weather,
         builder: (context, snapshot) {
           // Loading State
           if (snapshot.connectionState == ConnectionState.waiting) {
